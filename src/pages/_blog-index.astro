@@ -1,0 +1,60 @@
+---
+import PostList from '@/components/blog/PostList.astro';
+import type { Locale } from '@/i18n/config';
+import { localizePath, useTranslations } from '@/i18n/utils';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPosts } from '@/lib/posts';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const posts = await getPosts(lang);
+
+/** Group by publication year, newest first. */
+const byYear = posts.reduce<Map<number, typeof posts>>((groups, post) => {
+  const year = post.entry.data.pubDate.getUTCFullYear();
+  groups.set(year, [...(groups.get(year) ?? []), post]);
+  return groups;
+}, new Map());
+
+const years = [...byYear.keys()].sort((a, b) => b - a);
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${t('blog.title')} — Ángel Vega`}
+  description={t('blog.description')}
+>
+  <section>
+    {/* Above the title, so it is reachable without scrolling past the archive. */}
+    <p class="mb-6 text-sm">
+      <a
+        href={localizePath('/', lang)}
+        class="text-muted-foreground hover:text-foreground transition-colors"
+      >
+        ← {t('nav.home')}
+      </a>
+    </p>
+
+    <h1 class="text-2xl font-semibold">{t('blog.title')}</h1>
+    <p class="text-muted-foreground mt-2">{t('blog.description')}</p>
+  </section>
+
+  {
+    posts.length === 0 ? (
+      <p class="text-muted-foreground text-sm">{t('blog.empty')}</p>
+    ) : (
+      <div class="space-y-10">
+        {years.map((year) => (
+          <section>
+            <h2 class="text-muted-foreground mb-4 font-mono text-xs tabular-nums">{year}</h2>
+            <PostList posts={byYear.get(year) ?? []} lang={lang} />
+          </section>
+        ))}
+      </div>
+    )
+  }
+</BaseLayout>

@@ -1,0 +1,52 @@
+---
+import { render } from 'astro:content';
+import PostMeta from '@/components/blog/PostMeta.astro';
+import Prose from '@/components/ui/Prose.astro';
+import type { Locale } from '@/i18n/config';
+import { isoDate, localizePath, useTranslations } from '@/i18n/utils';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import type { Post } from '@/lib/posts';
+
+interface Props {
+  post: Post;
+  /** Path of the same post in the other locale, or `null` if untranslated. */
+  alternate: string | null;
+}
+
+const { post, alternate } = Astro.props;
+const lang = post.lang as Locale;
+const t = useTranslations(lang);
+
+const { Content } = await render(post.entry);
+const { title, description, pubDate } = post.entry.data;
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${title} — Ángel Vega`}
+  description={description}
+  alternate={alternate}
+  type="article"
+  publishedTime={isoDate(pubDate)}
+>
+  <article class="space-y-8">
+    <header class="space-y-3">
+      {/* Above the title, so it is reachable without reading the whole post. */}
+      <p class="mb-6 text-sm">
+        <a
+          href={localizePath('/blog', lang)}
+          class="text-muted-foreground hover:text-foreground transition-colors"
+        >
+          ← {t('blog.back')}
+        </a>
+      </p>
+
+      <h1 class="text-2xl leading-tight font-semibold">{title}</h1>
+      <PostMeta post={post} lang={lang} />
+    </header>
+
+    <Prose>
+      <Content />
+    </Prose>
+  </article>
+</BaseLayout>

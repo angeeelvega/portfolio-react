@@ -1,0 +1,27 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { localizePath } from '@/i18n/utils';
+import { getPosts, getTranslation } from '@/lib/posts';
+import BlogPost from '../../_blog-post.astro';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts('es');
+
+  return Promise.all(
+    posts.map(async (post) => {
+      const sibling = await getTranslation(post, 'en');
+      return {
+        params: { slug: post.slug },
+        props: {
+          post,
+          alternate: sibling ? localizePath(`/blog/${sibling.slug}`, 'en') : null,
+        },
+      };
+    })
+  );
+}) satisfies GetStaticPaths;
+
+const { post, alternate } = Astro.props;
+---
+
+<BlogPost post={post} alternate={alternate} />
