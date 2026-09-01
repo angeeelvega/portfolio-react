@@ -1,0 +1,243 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   shadcn/ui token layer — "new-york", base color: neutral.
+   Taken verbatim so `pnpm dlx shadcn add <x>` keeps working if React is ever
+   added. NOTE: --accent / --accent-foreground are shadcn's HOVER GRAYS, not a
+   brand colour. The single site accent lives in --brand, deliberately separate.
+--------------------------------------------------------------------------- */
+
+:root {
+  --radius: 0.5rem;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+
+  /* The one accent. Appears in exactly four places sitewide:
+     focus ring · link + arrow hover · active locale · prose links. */
+  --brand: oklch(0.55 0.17 256);
+
+  /* 640px box - 2x20px padding = a 600px text measure, matching the reference. */
+  --content-width: 40rem;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+
+  /* Lifted for AA contrast against the dark background. */
+  --brand: oklch(0.72 0.15 256);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand: var(--brand);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    /* Geist stylistic sets: single-storey a/g. This is a large part of why the
+       Vercel UI reads the way it does. */
+    font-feature-settings: 'cv11', 'ss01';
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Kill the default ring, then restore a real one for keyboard users.
+     The previous stylesheet had a blanket `:focus { outline: none }`, which
+     left keyboard navigation with no visible indicator anywhere. */
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    @apply bg-brand/20;
+  }
+
+  /* Dates and numeric ranges should never shift width between locales. */
+  time,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Prose — remaps @tailwindcss/typography onto the shadcn tokens so the blog
+   inherits the exact same palette as the rest of the site in both themes.
+
+   UNLAYERED on purpose: the plugin sets these same `--tw-prose-*` variables on
+   `.prose` from the `utilities` layer, which beats `components` no matter the
+   specificity. Unlayered CSS wins over every layer, so this is the only place
+   the remap actually takes effect.
+--------------------------------------------------------------------------- */
+
+.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--brand);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--border);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--muted-foreground);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--muted);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+
+  /* The invert variant reads the same variables, so light and dark stay in
+       lockstep automatically — no second block to maintain. */
+  --tw-prose-invert-body: var(--foreground);
+  --tw-prose-invert-headings: var(--foreground);
+  --tw-prose-invert-lead: var(--muted-foreground);
+  --tw-prose-invert-links: var(--brand);
+  --tw-prose-invert-bold: var(--foreground);
+  --tw-prose-invert-counters: var(--muted-foreground);
+  --tw-prose-invert-bullets: var(--border);
+  --tw-prose-invert-hr: var(--border);
+  --tw-prose-invert-quotes: var(--muted-foreground);
+  --tw-prose-invert-quote-borders: var(--border);
+  --tw-prose-invert-captions: var(--muted-foreground);
+  --tw-prose-invert-code: var(--foreground);
+  --tw-prose-invert-pre-code: var(--foreground);
+  --tw-prose-invert-pre-bg: var(--muted);
+  --tw-prose-invert-th-borders: var(--border);
+  --tw-prose-invert-td-borders: var(--border);
+}
+
+/* Shiki emits both themes; swap them off the same .dark class the rest of
+     the site uses, instead of a media query that would ignore the toggle. */
+/* The surface is deliberately OURS, not the Shiki theme's (#fff / #24292e), so
+   code blocks match every other panel on the site in both themes.
+
+   Background goes on <pre> ONLY. Setting it on spans too — as this previously
+   did — paints a filled bar behind every token, because each span inherits the
+   background variable from its parent. */
+.prose .astro-code {
+  background-color: var(--muted);
+}
+
+/* Token colours DO come from Shiki, one variable per theme. */
+.prose .astro-code,
+.prose .astro-code span {
+  color: var(--shiki-light);
+}
+
+.dark .prose .astro-code,
+.dark .prose .astro-code span {
+  color: var(--shiki-dark);
+}
+
+/* The plugin decorates inline <code> with literal backticks, and blockquotes
+   with curly quotes. Both are opinions we don't share. */
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after,
+.prose blockquote p:first-of-type::before,
+.prose blockquote p:last-of-type::after {
+  content: none;
+}
+
+.prose :not(pre) > code {
+  background-color: var(--muted);
+  border-radius: var(--radius-sm);
+  padding: 0.15em 0.4em;
+  font-size: 0.875em;
+  font-weight: 400;
+}
+
+.prose blockquote {
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* ---------------------------------------------------------------------------
+   Motion — native cross-document view transitions. Same effect <ClientRouter />
+   gives, at zero bytes, and with no theme re-application on swap.
+--------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
