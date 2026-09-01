@@ -1,36 +1,11 @@
 {
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", "node_modules"],
   "compilerOptions": {
-    /* Base Options: */
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "target": "es2022",
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "moduleDetection": "force",
-    "isolatedModules": true,
-    "typeRoots": ["./node_modules/@types", "./types", "./node_modules/nlcst"],
-
-    /* Strictness */
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "checkJs": true,
-
-    /* Bundled projects */
-    "lib": ["dom", "dom.iterable", "ES2022"],
-    "noEmit": true,
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "jsx": "react-jsx",
-    "allowImportingTsExtensions": true,
-
-    /* Path Aliases */
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["./src/components/*"],
-      "@layouts/*": ["./src/layouts/*"],
-      "@pages/*": ["./src/pages/*"]
+      "@/*": ["./src/*"]
     }
-  },
-  "include": [".eslintrc.cjs", "**/*.ts", "**/*.tsx", "**/*.astro"],
-  "exclude": ["node_modules"]
+  }
 }

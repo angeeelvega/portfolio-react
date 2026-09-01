@@ -1,41 +1,32 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# build output
+dist/
+.astro/
+.vercel/
+.output/
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
+node_modules/
 
-# testing
-/coverage
-
-# database
-/prisma/db.sqlite
-/prisma/db.sqlite-journal
-db.sqlite
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+# generated types
+env.d.ts.timestamp-*
+*.tsbuildinfo
 
 # local env files
-# do not commit any .env files to git, except for the .env.example file. https://create.t3.gg/en/usage/env-variables#using-environment-variables
 .env
 .env*.local
 
-# vercel
-.vercel
+# macOS
+.DS_Store
 
-# typescript
-*.tsbuildinfo
+# editors
+.idea/
+.vscode/
 
-# idea files
-.idea
+# logs
+*-debug.log*
+
+# tooling artifacts
+.atl/
+
+# personal documents — the CV PDF contains a private phone number
+*.pdf
