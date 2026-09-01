@@ -1,3 +1,10 @@
+# Not a monorepo. This file exists only because pnpm 10+ reads its settings
+# from here rather than from package.json. The `packages` field is required by
+# pnpm 9, which Vercel uses by default and which otherwise rejects the file
+# with "packages field missing or empty".
+packages:
+  - '.'
+
 allowBuilds:
   esbuild: true
 
