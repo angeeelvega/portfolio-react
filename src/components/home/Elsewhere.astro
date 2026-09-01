@@ -1,0 +1,36 @@
+---
+import SectionHeading from '@/components/SectionHeading.astro';
+import BrandIcon from '@/components/ui/BrandIcon.astro';
+import ExternalLink from '@/components/ui/ExternalLink.astro';
+import { social } from '@/data/social';
+import type { Locale } from '@/i18n/config';
+import { useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section>
+  <SectionHeading id="elsewhere">{t('section.elsewhere')}</SectionHeading>
+
+  <ul class="space-y-2 text-sm">
+    {
+      social.map((link) => (
+        <li class="flex flex-wrap items-center gap-x-3">
+          {/* The width lives on the wrapper, not the link: a fixed width on the
+              link itself clipped "LinkedIn" together with its ↗ glyph. */}
+          <span class="flex w-32 shrink-0 items-center gap-2">
+            {/* Decorative: the label right next to it already names the link. */}
+            <BrandIcon icon={link.icon} class="text-muted-foreground" />
+            <ExternalLink href={link.href}>{link.label}</ExternalLink>
+          </span>
+          <span class="text-muted-foreground font-mono text-xs">{link.handle}</span>
+        </li>
+      ))
+    }
+  </ul>
+</section>

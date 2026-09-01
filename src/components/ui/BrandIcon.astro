@@ -1,0 +1,28 @@
+---
+import type { Icon } from '@/data/icons';
+import { cn } from '@/lib/utils';
+
+interface Props {
+  icon: Icon;
+  class?: string;
+  /**
+   * Set only when the icon stands alone with no adjacent text label — then it
+   * carries the meaning and needs an accessible name. Next to a visible label
+   * it must stay decorative, or screen readers announce the name twice.
+   */
+  label?: string;
+}
+
+const { icon, class: className, label } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 24 24"
+  fill="currentColor"
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  class={cn('size-4 shrink-0', className)}
+>
+  <path d={icon.path}></path>
+</svg>

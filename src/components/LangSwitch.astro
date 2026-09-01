@@ -1,0 +1,58 @@
+---
+import { LOCALE_LABELS, LOCALE_TAGS, LOCALES, type Locale } from '@/i18n/config';
+import { localizePath, stripLocale, useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: Locale;
+  /**
+   * Where the *other* locale lives.
+   *  - `undefined` → derive it from the current path (correct for every static page).
+   *  - `null`      → no counterpart exists; the link degrades to the localized
+   *                  blog index instead of 404-ing. Blog posts pass this.
+   */
+  alternate?: string | null;
+}
+
+const { lang, alternate } = Astro.props;
+const t = useTranslations(lang);
+
+const basePath = stripLocale(Astro.url.pathname);
+
+function hrefFor(target: Locale): string {
+  if (target === lang) return localizePath(basePath, lang);
+  if (alternate === null) return localizePath('/blog', target);
+  return alternate ?? localizePath(basePath, target);
+}
+
+// When the counterpart is missing the link falls back to that locale's blog
+// index. That is not a translation of this page, so the anchor must not carry
+// an `hreflang` claiming it is.
+const missing = alternate === null;
+---
+
+<nav aria-label="Language" class="flex items-center gap-2 text-sm">
+  {
+    LOCALES.map((locale, i) => (
+      <>
+        {i > 0 && <span class="text-muted-foreground/40 select-none">/</span>}
+        {locale === lang ? (
+          <span aria-current="true" class="text-brand">
+            {LOCALE_LABELS[locale]}
+          </span>
+        ) : (
+          <a
+            href={hrefFor(locale)}
+            hreflang={missing ? undefined : LOCALE_TAGS[locale]}
+            title={missing ? t('blog.noTranslation') : t('lang.switch')}
+            class:list={[
+              'text-muted-foreground hover:text-foreground transition-colors',
+              missing && 'opacity-40',
+            ]}
+          >
+            {LOCALE_LABELS[locale]}
+          </a>
+        )}
+      </>
+    ))
+  }
+</nav>

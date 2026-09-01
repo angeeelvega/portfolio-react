@@ -1,0 +1,27 @@
+---
+import BulletList from '@/components/ui/BulletList.astro';
+import ExternalLink from '@/components/ui/ExternalLink.astro';
+import type { Project } from '@/data/projects';
+import type { Locale } from '@/i18n/config';
+
+interface Props {
+  project: Project;
+  lang: Locale;
+}
+
+const { project, lang } = Astro.props;
+---
+
+<div>
+  <h3 class="text-[0.9375rem] font-medium">
+    {project.href ? <ExternalLink href={project.href}>{project.name}</ExternalLink> : project.name}
+  </h3>
+
+  {
+    project.context && (
+      <p class="text-muted-foreground font-mono text-xs tabular-nums">{project.context[lang]}</p>
+    )
+  }
+
+  <BulletList items={project.bullets[lang]} />
+</div>

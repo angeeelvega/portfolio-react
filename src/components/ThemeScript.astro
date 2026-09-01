@@ -1,0 +1,24 @@
+---
+/**
+ * Reverts to light only when the visitor explicitly asked for it.
+ *
+ * The site is dark by default: `<html class="dark" style="color-scheme: dark">`
+ * is written directly in BaseLayout, so the page is already dark before this
+ * runs — and stays dark even with JavaScript disabled. This script's only job
+ * is to undo that for someone who clicked the toggle.
+ *
+ * `is:inline` is required: Astro must NOT bundle or defer it, because it has to
+ * run synchronously in <head> ahead of any rendering. A hydrated island could
+ * not do this — islands hydrate after the first paint by definition.
+ *
+ * The OS preference is deliberately ignored. Dark is the design default here,
+ * not a mirror of the system.
+ */
+---
+
+<script is:inline>
+  if (localStorage.getItem('theme') === 'light') {
+    document.documentElement.classList.remove('dark');
+    document.documentElement.style.colorScheme = 'light';
+  }
+</script>

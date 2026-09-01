@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets';
+import avatar from '@/assets/images/angel.jpg';
+import BrandIcon from '@/components/ui/BrandIcon.astro';
+import { icons } from '@/data/icons';
+import { intro, site } from '@/data/site';
+import type { Locale } from '@/i18n/config';
+import { localizePath, useTranslations } from '@/i18n/utils';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const paragraphs = intro.paragraphs[lang];
+
+const iconLink = 'text-muted-foreground hover:text-foreground transition-colors';
+---
+
+<section class="space-y-6">
+  <div class="flex items-center gap-3">
+    {/* 56px inline, not a 256px block: an identity marker, not a hero. */}
+    <Image
+      src={avatar}
+      alt={site.fullName}
+      width={56}
+      height={56}
+      densities={[1, 2]}
+      loading="eager"
+      class="border-border size-14 shrink-0 rounded-full border object-cover"
+    />
+
+    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+      <span class="font-medium">{site.name}</span>
+      <span class="text-muted-foreground/40 select-none">/</span>
+
+      {/* These icons stand alone, so each needs an accessible name. */}
+      <a
+        href={`https://github.com/${site.github}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class={iconLink}
+      >
+        <BrandIcon icon={icons.github} label="GitHub" />
+      </a>
+      <a
+        href={`https://www.linkedin.com/in/${site.linkedin}/`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class={iconLink}
+      >
+        <BrandIcon icon={icons.linkedin} label="LinkedIn" />
+      </a>
+
+      <span class="text-muted-foreground/40 select-none">/</span>
+      <a href={localizePath('/blog', lang)} class={`${iconLink} text-sm`}>{t('nav.blog')}</a>
+    </div>
+  </div>
+
+  <p class="text-muted-foreground text-sm">{intro.tagline[lang]}</p>
+
+  <div class="space-y-4 leading-relaxed">
+    {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+</section>

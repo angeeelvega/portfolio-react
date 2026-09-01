@@ -1,0 +1,30 @@
+---
+import type { Post } from '@/lib/posts';
+import type { Locale } from '@/i18n/config';
+import { formatMonthYear, isoDate, localizePath } from '@/i18n/utils';
+
+interface Props {
+  post: Post;
+  lang: Locale;
+}
+
+const { post, lang } = Astro.props;
+const { pubDate, title } = post.entry.data;
+const href = localizePath(`/blog/${post.slug}`, lang);
+---
+
+<li class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+  <time
+    datetime={isoDate(pubDate)}
+    class="text-muted-foreground w-24 shrink-0 font-mono text-xs tabular-nums"
+  >
+    {formatMonthYear(isoDate(pubDate).slice(0, 7), lang)}
+  </time>
+
+  <a
+    href={href}
+    class="hover:text-brand decoration-border hover:decoration-brand text-[0.9375rem] underline underline-offset-[3px] transition-colors"
+  >
+    {title}
+  </a>
+</li>

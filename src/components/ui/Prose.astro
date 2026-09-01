@@ -1,0 +1,23 @@
+---
+/**
+ * Blog post body. The `--tw-prose-*` variables are remapped onto the shadcn
+ * tokens in global.css, so light and dark stay in lockstep with the rest of the
+ * site without a second set of colour rules here.
+ */
+---
+
+<div
+  class="prose prose-neutral dark:prose-invert prose-headings:font-semibold prose-h2:text-lg prose-h3:text-base prose-pre:border prose-pre:border-border prose-img:rounded-lg max-w-none text-base"
+>
+  <slot />
+</div>
+
+<style is:global>
+  /* Wide content scrolls inside its own container instead of pushing the page
+     sideways on narrow viewports. */
+  .prose :is(table, pre) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+</style>

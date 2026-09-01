@@ -1,0 +1,24 @@
+---
+import Elsewhere from '@/components/home/Elsewhere.astro';
+import Experience from '@/components/home/Experience.astro';
+import Intro from '@/components/home/Intro.astro';
+import Projects from '@/components/home/Projects.astro';
+import Skills from '@/components/home/Skills.astro';
+import { meta } from '@/data/site';
+import type { Locale } from '@/i18n/config';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+---
+
+<BaseLayout lang={lang} title={meta.home.title[lang]} description={meta.home.description[lang]}>
+  <Intro lang={lang} />
+  <Experience lang={lang} />
+  <Projects lang={lang} />
+  <Skills lang={lang} />
+  <Elsewhere lang={lang} />
+</BaseLayout>

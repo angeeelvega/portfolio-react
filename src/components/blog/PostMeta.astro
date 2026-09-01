@@ -1,0 +1,41 @@
+---
+import type { Locale } from '@/i18n/config';
+import { formatDate, isoDate, useTranslations } from '@/i18n/utils';
+import type { Post } from '@/lib/posts';
+
+interface Props {
+  post: Post;
+  lang: Locale;
+}
+
+const { post, lang } = Astro.props;
+const t = useTranslations(lang);
+const { pubDate, updatedDate, tags } = post.entry.data;
+---
+
+<div class="text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-xs">
+  <time datetime={isoDate(pubDate)} class="tabular-nums">{formatDate(pubDate, lang)}</time>
+  <span class="text-muted-foreground/40 select-none">·</span>
+  <span>{t('blog.readingTime', { n: post.minutes })}</span>
+
+  {
+    tags.length > 0 && (
+      <>
+        <span class="text-muted-foreground/40 select-none">·</span>
+        <ul class="flex flex-wrap gap-1">
+          {tags.map((tag) => (
+            <li class="border-border rounded-md border px-2 py-0.5">{tag}</li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+</div>
+
+{
+  updatedDate && (
+    <p class="text-muted-foreground mt-1 font-mono text-xs">
+      {t('blog.updated', { date: formatDate(updatedDate, lang) })}
+    </p>
+  )
+}

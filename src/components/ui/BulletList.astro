@@ -1,0 +1,17 @@
+---
+/**
+ * The vertical rail used across project and experience cards.
+ *
+ * `ml-[7px]` offsets the hairline so it sits optically under the title above it
+ * rather than flush with the text column.
+ */
+interface Props {
+  items: string[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="border-border text-muted-foreground mt-2 ml-[7px] space-y-2 border-l pl-4 text-sm">
+  {items.map((item) => <li class="leading-relaxed">{item}</li>)}
+</ul>

@@ -1,0 +1,75 @@
+---
+import { Font } from 'astro:assets';
+import Footer from '@/components/Footer.astro';
+import LangSwitch from '@/components/LangSwitch.astro';
+import Seo from '@/components/seo/Seo.astro';
+import ThemeScript from '@/components/ThemeScript.astro';
+import ThemeToggle from '@/components/ThemeToggle.astro';
+import { LOCALE_TAGS, type Locale } from '@/i18n/config';
+import '@/styles/global.css';
+
+interface Props {
+  lang: Locale;
+  title: string;
+  description: string;
+  alternate?: string | null;
+  ogImage?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  noindex?: boolean;
+}
+
+const { lang, alternate, ...seo } = Astro.props;
+---
+
+<!doctype html>
+{
+  /* Dark is the default, set here rather than by script, so the site is dark
+    before first paint and stays dark even with JavaScript disabled.
+    ThemeScript below only reverts it when the visitor chose light. */
+}
+<html lang={LOCALE_TAGS[lang]} class="dark" style="color-scheme: dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {/* Must be the first script: runs before paint, and only to revert to light. */}
+    <ThemeScript />
+
+    <Font cssVariable="--font-geist-sans" preload />
+    <Font cssVariable="--font-geist-mono" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Ángel Vega"
+      href={lang === 'en' ? '/rss.xml' : '/es/rss.xml'}
+    />
+
+    <Seo lang={lang} alternate={alternate} {...seo} />
+  </head>
+
+  <body class="min-h-dvh">
+    {/* The single <main> for the whole site. Pages must not open their own. */}
+    <main class="mx-auto max-w-[var(--content-width)] px-5 pt-8 pb-32 md:pt-12">
+      {
+        /* In the flow rather than fixed: it is the first thing on the page, so
+          it never overlaps content on scroll and needs no backdrop. */
+      }
+      <div class="flex justify-end">
+        <LangSwitch lang={lang} alternate={alternate} />
+      </div>
+
+      <div class="mt-12 space-y-16 md:mt-20 md:space-y-24">
+        <slot />
+      </div>
+
+      <Footer />
+    </main>
+
+    <ThemeToggle lang={lang} />
+  </body>
+</html>

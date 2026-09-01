@@ -1,0 +1,43 @@
+---
+import { cn } from '@/lib/utils';
+
+interface Props {
+  href: string;
+  class?: string;
+  /** Hide the ↗ glyph — useful for inline links inside a sentence. */
+  bare?: boolean;
+}
+
+const { href, class: className, bare = false } = Astro.props;
+
+// mailto: and relative links are same-context; only http(s) opens a new tab.
+const isExternal = /^https?:\/\//.test(href);
+---
+
+<a
+  href={href}
+  target={isExternal ? '_blank' : undefined}
+  rel={isExternal ? 'noopener noreferrer' : undefined}
+  class={cn(
+    'group/link decoration-border hover:decoration-brand inline-flex items-baseline gap-1 underline underline-offset-[3px] transition-colors',
+    className
+  )}
+>
+  <slot />
+  {
+    !bare && isExternal && (
+      <svg
+        class="text-muted-foreground group-hover/link:text-brand size-3 shrink-0 translate-y-[1px] transition-colors"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M7 17 17 7M9 7h8v8" />
+      </svg>
+    )
+  }
+</a>
